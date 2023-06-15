@@ -14,8 +14,8 @@ public class LoginResponse {
     private int code = HttpStatus.OK.value();
     private Object result;
 
-    private boolean success;
-    private String message;
+    //private boolean success;
+    //private String message;
     public LoginResponse(){};
     public void setResult(Object result) {
         this.result = result;

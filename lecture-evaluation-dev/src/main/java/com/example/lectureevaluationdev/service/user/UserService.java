@@ -7,6 +7,7 @@ import com.example.lectureevaluationdev.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +34,9 @@ public class UserService extends ResponseService {
                 result = -1; // ID 없음
                 return setResponse(404, "message", "존재하지 않는 ID입니다.");
 
-            } else {
+            }
+
+            else {
                 result = 0; //로그인 실패
                 return setResponse(402, "message", "로그인 실패");
 
@@ -46,11 +49,24 @@ public class UserService extends ResponseService {
 
     }
 
-    public LoginResponse signupUser(User userInfo) {
+    public LoginResponse signUpUser(User userInfo) {
         try {
 
-            userRepository.save(userInfo);//유저정보 저장 메소드 (insert문을 쓰지않아도..된다니!)
-            return setResponse(200, "message", "회원가입 완료");
+            //존재하는지 확인
+            Optional<User> userinfo = Optional.ofNullable(userRepository.findByUserID(userInfo.getUserID()));
+            if(userinfo.isPresent()){
+                return setResponse(400,"message","회원가입 실패. 중복회원입니다.");
+            }
+
+            else{
+                //이메일 유효성 확인
+                if(isValidEmail(userInfo.getUserEmail()) == false){
+                    return setResponse(406,"message","유효하지 않은 이메일 형식입니다.");
+                }
+                
+                userRepository.save(userInfo);//유저정보 저장 메소드 (insert문을 쓰지않아도..된다니!)
+                return setResponse(200, "message", "회원가입 완료");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

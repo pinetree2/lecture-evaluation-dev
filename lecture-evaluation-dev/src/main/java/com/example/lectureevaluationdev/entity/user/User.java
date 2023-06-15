@@ -1,9 +1,6 @@
 package com.example.lectureevaluationdev.entity.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,22 +11,30 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data //get,set 메소드 이용가능하게 하는 어노테이션
+@Table(name = "user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//는 JPA에서 기본 키를 자동으로 생성할 때 사용하는 방법 중 하나
-    private int ID;
+    @Column(name="ID")
+    private Long ID;
 
+    @Column(name="user_ID")
     private String userID;
 
+    @Column(name="user_password")
     private String userPassword;
 
+    @Column(name="user_email")
     private String userEmail;
 
+    /*
+    @Column(name="userEmailHash")
     private String userEmailHash;
 
+    @Column(name="userEmailChecked")
     private boolean userEmailChecked;
-
+*/
     public String getUserID() {
         return userID;
     }
@@ -42,11 +47,4 @@ public class User {
         return userEmail;
     }
 
-    public String getUserEmailHash() {
-        return userEmailHash;
-    }
-
-    public boolean isUserEmailChecked() {
-        return userEmailChecked;
-    }
 }
