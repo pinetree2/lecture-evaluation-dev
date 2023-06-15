@@ -9,6 +9,8 @@ import com.example.lectureevaluationdev.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -67,6 +69,28 @@ public class EvaluationService extends ResponseService {
             }
 
         }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //삭제
+    public EvaluationResponse deleteEvaluation(Long evaluationID, User userInfo) {
+        Optional<User> usercheck = Optional.ofNullable(userRepository.findByUserID(userInfo.getUserID()));
+        Optional<Evaluation> checkevaluation = evaluationRepository.findByEvaluationID(evaluationID);
+
+        try {
+            //입력받은 user값과 db의 값이 일치할경우에만
+            if (usercheck.isPresent() && checkevaluation.isPresent()) {
+                if (usercheck.get().getUserPassword() == userInfo.getUserPassword()) {
+                    evaluationRepository.deleteById(evaluationID);
+                    return setResponse(200, "message", "삭제가 완료되었습니다.");
+                } else {
+                    return setResponse(501, "message", "삭제 실패하였습니다.");
+                }
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
