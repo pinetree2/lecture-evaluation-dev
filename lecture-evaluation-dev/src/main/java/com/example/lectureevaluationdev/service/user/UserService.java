@@ -1,6 +1,6 @@
 package com.example.lectureevaluationdev.service.user;
 
-import com.example.lectureevaluationdev.primary.LoginResponse;
+import com.example.lectureevaluationdev.primary.EvaluationResponse;
 import com.example.lectureevaluationdev.primary.ResponseService;
 import com.example.lectureevaluationdev.entity.user.User;
 import com.example.lectureevaluationdev.repository.user.UserRepository;
@@ -21,7 +21,7 @@ public class UserService extends ResponseService {
         this.userRepository = userRepository;
     }
 
-    public LoginResponse login(User user) {
+    public EvaluationResponse login(User user) {
         User foundUser = userRepository.findByUserID(user.getUserID());
         int result = 0;
         boolean success = result == 1;
@@ -49,7 +49,7 @@ public class UserService extends ResponseService {
 
     }
 
-    public LoginResponse signUpUser(User userInfo) {
+    public EvaluationResponse signUpUser(User userInfo) {
         try {
 
             //존재하는지 확인

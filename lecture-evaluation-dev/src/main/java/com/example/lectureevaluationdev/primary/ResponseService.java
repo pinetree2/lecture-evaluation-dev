@@ -1,22 +1,22 @@
 package com.example.lectureevaluationdev.primary;
 
 public class ResponseService {
-    private LoginResponse.ResponseMap result;
-    public LoginResponse setResponse(int code, String message, Object object) throws Exception {
-        result = new LoginResponse.ResponseMap();
+    private EvaluationResponse.ResponseMap result;
+    public EvaluationResponse setResponse(int code, String message, Object object) throws Exception {
+        result = new EvaluationResponse.ResponseMap();
         result.setCode(code);
         result.setResponseData(message, object);
         return result;
     }
 
-    public LoginResponse addResponse(String message, Object object) throws Exception {
+    public EvaluationResponse addResponse(String message, Object object) throws Exception {
         if(result == null)
-            result = new LoginResponse.ResponseMap();
+            result = new EvaluationResponse.ResponseMap();
         result.setResponseData(message, object);
         return result;
     }
 
-    public LoginResponse getResult() {
+    public EvaluationResponse getResult() {
         return result;
     }
 
