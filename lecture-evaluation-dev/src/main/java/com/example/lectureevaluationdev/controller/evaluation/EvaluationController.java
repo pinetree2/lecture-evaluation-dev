@@ -12,16 +12,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/evaluation")
 public class EvaluationController {
     private final EvaluationService evaluationService;
-
+    private final EvaluationRepository evaluationRepository;
 
     @Autowired
-    public EvaluationController(EvaluationService evaluationService) {
+    public EvaluationController(EvaluationService evaluationService, EvaluationRepository evaluationRepository) {
         this.evaluationService = evaluationService;
+        this.evaluationRepository = evaluationRepository;
     }
 
     //강의평가 쓰기
@@ -42,10 +44,6 @@ public class EvaluationController {
                 .lectureScore(content.get("lectureScore").toString())
                 .build();
 
-        Evaluation updatedEvaluation = Evaluation.builder().build();
-        BeanUtils.copyProperties(existingEvaluation, updatedEvaluation);
-        BeanUtils.copyProperties(content, updatedEvaluation);
-
         EvaluationResponse result = evaluationService.writeEvaluation(evaluationcontent);
         return result;
 
@@ -61,30 +59,26 @@ public class EvaluationController {
                 .userPassword(content.get("userPassword").toString())
                 .userEmail(content.get("userEmail").toString())
                 .build();
-        /*
+
+        Evaluation existingEvaluation = evaluationRepository.findByEvaluationID(evaluationID); // Retrieve the existing entity
         Evaluation evaluationcontent = Evaluation.builder()
                 .userID(content.get("userID").toString())
-                .lectureName(content.get("lectureName").toString())
-                .professorName(content.get("professorName").toString())
-                .lectureYear((Integer) content.get("lectureYear"))
-                .semesterDivide(content.get("semesterDivide").toString())
-                .evaluationTitle(content.get("evaluationTitle").toString())
-                .evaluationContent(content.get("evaluationContent").toString())
-                .totalScore(content.get("totalScore").toString())
-                .creditScore(content.get("creditScore").toString())
-                .comfortableScore(content.get("comfortableScore").toString())
-                .lectureScore(content.get("lectureScore").toString())
+                .lectureName(content.get("lectureName")!= null ? content.get("lectureName").toString() : null)
+                .professorName(content.get("professorName")!= null ? content.get("professorName").toString() : null)
+                .lectureYear(content.get("lectureYear") != null ? Integer.parseInt((String) content.get("lectureYear")) : null)
+                .semesterDivide(content.get("semesterDivide")!= null ? content.get("semesterDivide").toString() : null)
+                .evaluationTitle(content.get("evaluationTitle")!= null ? content.get("evaluationTitle").toString() : null)
+                .evaluationContent(content.get("evaluationContent")!= null ? content.get("evaluationContent").toString() : null)
+                .totalScore(content.get("totalScore")!= null ? content.get("totalScore").toString() : null)
+                .creditScore(content.get("creditScore")!= null ? content.get("creditScore").toString() : null)
+                .comfortableScore(content.get("comfortableScore")!= null ? content.get("comfortableScore").toString() : null)
+                .lectureScore(content.get("lectureScore")!= null ? content.get("lectureScore").toString() : null)
                 .build();
-        */
-        Evaluation existingEvaluation = evaluationre.getEvaluationById(evaluationID); // Retrieve the existing entity
 
+        BeanUtils.copyProperties(existingEvaluation, evaluationcontent);
         EvaluationResponse result = evaluationService.modifyEvaluation(userInfo,evaluationID,evaluationcontent);
         return result;
     }
-
-
-
-
 
 
     //글 삭제
@@ -97,7 +91,6 @@ public class EvaluationController {
                 .userPassword(user.get("userPassword").toString())
                 .userEmail(user.get("userEmail").toString())
                 .build();
-
         EvaluationResponse result = evaluationService.deleteEvaluation(evaluationID,userInfo);
         return result;
     }

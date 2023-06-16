@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
 
-    Optional<Evaluation> findByEvaluationID(long evaluationID);
+    //Optional<Evaluation> findByEvaluationID(long evaluationID);
+    Evaluation findByEvaluationID(long evaluationID);
 }

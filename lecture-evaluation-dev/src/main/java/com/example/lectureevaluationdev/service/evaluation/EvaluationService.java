@@ -31,11 +31,9 @@ public class EvaluationService extends ResponseService {
     public EvaluationResponse writeEvaluation(Evaluation evaluationcontent)  {
         //이미 존재하는지 확인을..할수가없네 ? 테이블 구조상..평가 과목별로 id 지정하거나 나눈게 아니라서...
         //또는 나의 작성 게시글 확인같은걸 할수가 없음
-
         try {
             evaluationRepository.save(evaluationcontent);
             return setResponse(200, "message", "글 작성 성공");
-
         }catch(Exception e){
             e.printStackTrace();
             System.out.println("글 작성 오류 발생");
@@ -46,7 +44,7 @@ public class EvaluationService extends ResponseService {
 
     public EvaluationResponse modifyEvaluation(User userInfo, long evaluationID, Evaluation evaluationcontent) {
         Optional<User> usercheck = Optional.ofNullable(userRepository.findByUserID(userInfo.getUserID()));
-        Optional<Evaluation> content = evaluationRepository.findByEvaluationID(evaluationID);
+        Optional<Evaluation> content = Optional.ofNullable(evaluationRepository.findByEvaluationID(evaluationID));
 
         try{
             //입력받은 user값과 db의 값이 일치할경우에만
@@ -99,7 +97,7 @@ public class EvaluationService extends ResponseService {
     //삭제
     public EvaluationResponse deleteEvaluation(Long evaluationID, User userInfo) {
         Optional<User> usercheck = Optional.ofNullable(userRepository.findByUserID(userInfo.getUserID()));
-        Optional<Evaluation> checkevaluation = evaluationRepository.findByEvaluationID(evaluationID);
+        Optional<Evaluation> checkevaluation = Optional.ofNullable(evaluationRepository.findByEvaluationID(evaluationID));
 
         try {
             //입력받은 user값과 db의 값이 일치할경우에만
