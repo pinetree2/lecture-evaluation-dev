@@ -85,6 +85,7 @@ public class EvaluationController {
     //권한확인이 따로 불가함
     //안넣었으니까.. user role 을..
     @DeleteMapping("/delete/{evaluationID}")
+    @ResponseBody
     public EvaluationResponse deleteEvaluationBoard(HttpServletRequest request,@PathVariable("evaluationID") Long evaluationID,@RequestBody Map<String,Object> user ) throws Exception{
         User userInfo = User.builder()
                 .userID(user.get("userID").toString())

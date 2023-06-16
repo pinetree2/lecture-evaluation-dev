@@ -104,6 +104,7 @@ public class EvaluationService extends ResponseService {
             if (usercheck.isPresent() && checkevaluation.isPresent()) {
                 if (usercheck.get().getUserPassword() == userInfo.getUserPassword()) {
                     evaluationRepository.deleteById(evaluationID);
+
                     return setResponse(200, "message", "삭제가 완료되었습니다.");
                 } else {
                     return setResponse(501, "message", "삭제 실패하였습니다.");
