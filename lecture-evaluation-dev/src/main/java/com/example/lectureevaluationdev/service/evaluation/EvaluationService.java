@@ -6,7 +6,9 @@ import com.example.lectureevaluationdev.entity.evaluation.Evaluation;
 import com.example.lectureevaluationdev.primary.EvaluationResponse;
 import com.example.lectureevaluationdev.repository.evaluation.EvaluationRepository;
 import com.example.lectureevaluationdev.repository.user.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -51,15 +53,35 @@ public class EvaluationService extends ResponseService {
             if(usercheck.isPresent() && content.isPresent()){
                 if(usercheck.get().getUserPassword()==userInfo.getUserPassword()){
                     Evaluation evaluations = content.get();
-                    evaluations.setLectureName(evaluationcontent.getLectureName());
-                    evaluations.setProfessorName(evaluationcontent.getProfessorName());
-                    evaluations.setSemesterDivide(evaluationcontent.getSemesterDivide());
-                    evaluations.setLectureDivide(evaluationcontent.getLectureDivide());
-                    evaluations.setEvaluationTitle(evaluationcontent.getEvaluationTitle());
-                    evaluations.setTotalScore(evaluationcontent.getTotalScore());
-                    evaluations.setCreditScore(evaluationcontent.getCreditScore());
-                    evaluations.setComfortableScore(evaluationcontent.getComfortableScore());
-                    evaluations.setLectureScore(evaluationcontent.getLectureScore());
+
+                    if (evaluationcontent.getLectureName() != null) {
+                        evaluations.setLectureName(evaluationcontent.getLectureName());
+                    }
+                    if (evaluationcontent.getProfessorName() != null) {
+                        evaluations.setProfessorName(evaluationcontent.getProfessorName());
+                    }
+                    if (evaluationcontent.getSemesterDivide() != null) {
+                        evaluations.setSemesterDivide(evaluationcontent.getSemesterDivide());
+                    }
+                    if (evaluationcontent.getLectureDivide() != null) {
+                        evaluations.setLectureDivide(evaluationcontent.getLectureDivide());
+                    }
+                    if (evaluationcontent.getEvaluationTitle() != null) {
+                        evaluations.setEvaluationTitle(evaluationcontent.getEvaluationTitle());
+                    }
+                    if (evaluationcontent.getTotalScore() != null) {
+                        evaluations.setTotalScore(evaluationcontent.getTotalScore());
+                    }
+                    if (evaluationcontent.getCreditScore() != null) {
+                        evaluations.setCreditScore(evaluationcontent.getCreditScore());
+                    }
+                    if (evaluationcontent.getComfortableScore() != null) {
+                        evaluations.setComfortableScore(evaluationcontent.getComfortableScore());
+                    }
+                    if (evaluationcontent.getLectureScore() != null) {
+                        evaluations.setLectureScore(evaluationcontent.getLectureScore());
+                    }
+                    //더 간단하게 작성하는 방법을 모르겠다..
                     evaluationRepository.save(evaluations);
                 }
                 return setResponse(200,"message","수정이 완료되었습니다.");

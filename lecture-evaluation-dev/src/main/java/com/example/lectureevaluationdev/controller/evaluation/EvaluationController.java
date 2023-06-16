@@ -6,6 +6,7 @@ import com.example.lectureevaluationdev.primary.EvaluationResponse;
 import com.example.lectureevaluationdev.repository.evaluation.EvaluationRepository;
 import com.example.lectureevaluationdev.service.evaluation.EvaluationService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.Map;
 @RequestMapping("/evaluation")
 public class EvaluationController {
     private final EvaluationService evaluationService;
+
 
     @Autowired
     public EvaluationController(EvaluationService evaluationService) {
@@ -40,12 +42,17 @@ public class EvaluationController {
                 .lectureScore(content.get("lectureScore").toString())
                 .build();
 
+        Evaluation updatedEvaluation = Evaluation.builder().build();
+        BeanUtils.copyProperties(existingEvaluation, updatedEvaluation);
+        BeanUtils.copyProperties(content, updatedEvaluation);
+
         EvaluationResponse result = evaluationService.writeEvaluation(evaluationcontent);
         return result;
 
 
     }
     //글 수정
+
     @PatchMapping("/modify/{evaluationID}")
     @ResponseBody
     public EvaluationResponse modifyEvaluationBoard(HttpServletRequest request,@PathVariable("evaluationID") long evaluationID,@RequestBody Map<String,Object> content ) throws Exception{
@@ -54,6 +61,7 @@ public class EvaluationController {
                 .userPassword(content.get("userPassword").toString())
                 .userEmail(content.get("userEmail").toString())
                 .build();
+        /*
         Evaluation evaluationcontent = Evaluation.builder()
                 .userID(content.get("userID").toString())
                 .lectureName(content.get("lectureName").toString())
@@ -67,10 +75,17 @@ public class EvaluationController {
                 .comfortableScore(content.get("comfortableScore").toString())
                 .lectureScore(content.get("lectureScore").toString())
                 .build();
+        */
+        Evaluation existingEvaluation = evaluationre.getEvaluationById(evaluationID); // Retrieve the existing entity
 
         EvaluationResponse result = evaluationService.modifyEvaluation(userInfo,evaluationID,evaluationcontent);
         return result;
     }
+
+
+
+
+
 
     //글 삭제
     //권한확인이 따로 불가함
