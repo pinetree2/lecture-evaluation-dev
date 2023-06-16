@@ -10,18 +10,18 @@ import java.util.Map;
 @Setter
 @Getter
 // Login response class
-public class LoginResponse {
+public class EvaluationResponse {
     private int code = HttpStatus.OK.value();
     private Object result;
 
     //private boolean success;
     //private String message;
-    public LoginResponse(){};
+    public EvaluationResponse(){};
     public void setResult(Object result) {
         this.result = result;
     }
 
-    public static class ResponseMap extends LoginResponse {
+    public static class ResponseMap extends EvaluationResponse {
 
         private Map responseData = new HashMap();
 
