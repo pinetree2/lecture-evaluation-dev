@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Map;
@@ -46,10 +47,10 @@ public class EvaluationService extends ResponseService {
         Optional<User> usercheck = Optional.ofNullable(userRepository.findByUserID(userInfo.getUserID()));
         Optional<Evaluation> content = Optional.ofNullable(evaluationRepository.findByEvaluationID(evaluationID));
 
-        try{
+        try {
             //입력받은 user값과 db의 값이 일치할경우에만
-            if(usercheck.isPresent() && content.isPresent()){
-                if(usercheck.get().getUserPassword()==userInfo.getUserPassword()){
+            if (usercheck.isPresent() && content.isPresent()) {
+                if (usercheck.get().getUserPassword() == userInfo.getUserPassword()) {
                     Evaluation evaluations = content.get();
 
                     if (evaluationcontent.getLectureName() != null) {
@@ -82,19 +83,19 @@ public class EvaluationService extends ResponseService {
                     //더 간단하게 작성하는 방법을 모르겠다..
                     evaluationRepository.save(evaluations);
                 }
-                return setResponse(200,"message","수정이 완료되었습니다.");
+                return setResponse(200, "message", "수정이 완료되었습니다.");
 
-            }else{
-                return setResponse(500,"message","수정이 불가합니다.");
+            } else {
+                return setResponse(500, "message", "수정이 불가합니다.");
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-
     //삭제
+    //@Transactional -> 복수의 데이터 삭제할때
     public EvaluationResponse deleteEvaluation(Long evaluationID, User userInfo) {
         Optional<User> usercheck = Optional.ofNullable(userRepository.findByUserID(userInfo.getUserID()));
         Optional<Evaluation> checkevaluation = Optional.ofNullable(evaluationRepository.findByEvaluationID(evaluationID));
@@ -102,9 +103,8 @@ public class EvaluationService extends ResponseService {
         try {
             //입력받은 user값과 db의 값이 일치할경우에만
             if (usercheck.isPresent() && checkevaluation.isPresent()) {
-                if (usercheck.get().getUserPassword() == userInfo.getUserPassword()) {
+                if (usercheck.get().getUserPassword().equals(userInfo.getUserPassword())) {
                     evaluationRepository.deleteById(evaluationID);
-
                     return setResponse(200, "message", "삭제가 완료되었습니다.");
                 } else {
                     return setResponse(501, "message", "삭제 실패하였습니다.");
