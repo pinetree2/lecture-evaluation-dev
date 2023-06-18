@@ -68,6 +68,7 @@ public class EvaluationController {
                 .professorName(content.get("professorName")!= null ? content.get("professorName").toString() : null)
                 .lectureYear(content.get("lectureYear") != null ? Integer.parseInt((String) content.get("lectureYear")) : null)
                 .semesterDivide(content.get("semesterDivide")!= null ? content.get("semesterDivide").toString() : null)
+                .lectureDivide(content.get("lectureDivide")!= null ? content.get("lectureDivide").toString() : null)
                 .evaluationTitle(content.get("evaluationTitle")!= null ? content.get("evaluationTitle").toString() : null)
                 .evaluationContent(content.get("evaluationContent")!= null ? content.get("evaluationContent").toString() : null)
                 .totalScore(content.get("totalScore")!= null ? content.get("totalScore").toString() : null)
@@ -97,5 +98,17 @@ public class EvaluationController {
         return result;
     }
 
+    @GetMapping("/search/{page}")
+    @ResponseBody
+    public EvaluationResponse getSearch(HttpServletRequest request,@PathVariable("page") int pageNum, @RequestParam("lectureDivide") String lectureDivide, @RequestParam("searchType") String searchType, @RequestParam("search") String search) throws Exception{
+
+        if(search.isEmpty()){
+            return null;
+        }else{
+
+            return evaluationService.searchBoard(pageNum,lectureDivide,searchType,search);
+        }
+
+    }
 
 }
