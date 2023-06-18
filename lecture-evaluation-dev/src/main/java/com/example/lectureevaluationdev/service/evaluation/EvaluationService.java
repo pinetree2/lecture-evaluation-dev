@@ -135,6 +135,7 @@ public class EvaluationService extends ResponseService {
         condition.put("lectureDivide",lectureDivide);
         List<Evaluation> objectEvaluation;
         */
+        
         Pageable pageable = PageRequest.of(pageNum, 10);
         Page<Evaluation> searchResults;
         try{
@@ -145,7 +146,7 @@ public class EvaluationService extends ResponseService {
             if(lectureDivide.equals("전체")){
                 searchResults = evaluationRepository.findByContentContainingIgnoreCase(search,pageable);
             }else{
-                searchResults = evaluationRepository.findByLectureDivideAndContentContainingIgnoreCase(lectureDivide,search,pageable);
+                searchResults = evaluationRepository.findByLectureDivideAndEvaluationContentContainingIgnoreCase(lectureDivide,search,pageable);
             }
 
             Sort sort;

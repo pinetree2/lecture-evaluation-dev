@@ -19,5 +19,5 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Long>, P
     Page<Evaluation> findAll(Pageable pageable);
     List<Evaluation> Sort(Sort sort);
     Page<Evaluation> findByContentContainingIgnoreCase(String search, Pageable pageable);
-    Page<Evaluation> findByLectureDivideAndContentContainingIgnoreCase(String lectureDivide, String search, Pageable pageable);
+    Page<Evaluation> findByLectureDivideAndEvaluationContentContainingIgnoreCase(String lectureDivide, String search, Pageable pageable);
 }
