@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Builder
 @AllArgsConstructor
@@ -53,7 +55,19 @@ public class Evaluation {
     @Column(name="lecture_score")
     String lectureScore;
 
-    int likeCount;
+    @Column(name="created_at", nullable = false)
+    Date createdAt;
 
+    @Column(name="updated_at", nullable = false)
+    Date updatedAt;
+
+    int likeCount;
+    @PrePersist
+    public void prePersist() {
+        // 기본값을 현재 시간으로 설정
+        final Date currentDate = new Date();
+        createdAt = currentDate;
+        updatedAt = currentDate;
+    }
 
 }

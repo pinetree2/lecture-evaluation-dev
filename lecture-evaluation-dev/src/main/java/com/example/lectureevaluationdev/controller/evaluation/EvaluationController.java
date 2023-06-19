@@ -12,10 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Controller
+@RestController //@RestController 어노테이션은 사용된 클래스의 모든 메서드에 자동으로 JSON 변환을 적용
 @RequestMapping("/evaluation")
 public class EvaluationController {
     private final EvaluationService evaluationService;
@@ -37,6 +38,7 @@ public class EvaluationController {
                 .professorName(content.get("professorName").toString())
                 .lectureYear((Integer) content.get("lectureYear"))
                 .semesterDivide(content.get("semesterDivide").toString())
+                .lectureDivide(content.get("lectureDivide").toString())
                 .evaluationTitle(content.get("evaluationTitle").toString())
                 .evaluationContent(content.get("evaluationContent").toString())
                 .totalScore(content.get("totalScore").toString())
@@ -105,7 +107,6 @@ public class EvaluationController {
         if(search.isEmpty()){
             return null;
         }else{
-
             return evaluationService.searchBoard(pageNum,lectureDivide,searchType,search);
         }
 

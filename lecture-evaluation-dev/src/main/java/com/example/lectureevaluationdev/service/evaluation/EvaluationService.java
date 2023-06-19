@@ -127,47 +127,47 @@ public class EvaluationService extends ResponseService {
     }
     //검색
     public EvaluationResponse searchBoard(int pageNum, String lectureDivide, String searchType, String search) {
-        /*
-        Map<String, Object> condition = new HashMap<>();
-        condition.put("search",setting(search));
-        //검색 정렬 종류
-        condition.put("searchType", searchType);
-        condition.put("lectureDivide",lectureDivide);
-        List<Evaluation> objectEvaluation;
-        */
-        
-        Pageable pageable = PageRequest.of(pageNum, 10);
-        Page<Evaluation> searchResults;
+
+
+        Sort sort;
+        if(searchType.equals("최신순")){
+            sort = Sort.by(Sort.Direction.DESC,"createdAt");
+            System.out.println("sort"+sort);
+        }else if(searchType.equals("추천순")){
+            sort = Sort.by(Sort.Direction.DESC,"likeCount");
+        }else{
+            sort = Sort.unsorted();
+        }
+        // 정렬 정보를 포함한 새로운 PageRequest를 생성합니다.
+        Pageable pageable = PageRequest.of(pageNum, 10,sort);
+
         try{
-            //List<Evaluation> evaluationOptional = this.evaluationRepository.findBySearchLike(search);
             //search : 검색하고자 하는 단어
             // 전체, 전공, 교양, 기타
+            Page<Evaluation> searchResults;
+            List<Evaluation> searchresult;
+            searchresult = evaluationRepository.searchByLectureDivideAndFields(lectureDivide,search,pageable).getContent();
 
+
+            /*
             if(lectureDivide.equals("전체")){
-                searchResults = evaluationRepository.findByContentContainingIgnoreCase(search,pageable);
+                searchresult = evaluationRepository.findAllByKeywordContainingIgnoreCase(search,pageable);
             }else{
-                searchResults = evaluationRepository.findByLectureDivideAndEvaluationContentContainingIgnoreCase(lectureDivide,search,pageable);
+                searchresult = evaluationRepository.searchByLectureDivideAndFields(lectureDivide,search,pageable);
             }
+*/
 
-            Sort sort;
-            if(searchType.equals("최신순")){
-                sort = Sort.by(Sort.Direction.DESC,"createdAt");
-            }else if(searchType.equals("추천순")){
-                sort = Sort.by(Sort.Direction.DESC,"like_count");
-            }else{
-                sort = Sort.unsorted();
-            }
-
-            // 정렬 정보를 포함한 새로운 PageRequest를 생성합니다.
-            pageable = PageRequest.of(pageNum, 10, sort);
 
             // 수정된 PageRequest를 사용하여 다시 데이터베이스에서 조회합니다.
-            searchResults = evaluationRepository.findAll(pageable);
-
-            // 검색 결과를 리스트로 반환합니다.
-            return setResponse(200,"success",searchResults.getContent());
-
-
+            //searchResults = evaluationRepository.findAll(pageable);
+            // 검색 결과가 비어있는 경우 따로 처리
+            if (searchresult.isEmpty()) {
+                return setResponse(200, "no_results", new ArrayList<>());
+            }
+            else{
+                // 검색 결과를 리스트로 반환합니다.
+                return setResponse(200,"success",searchresult);
+            }
             //페이징 num 에 맞게 검색 + 최신순, 추천순정렬값 searchtype sort
             //EvaluationResponse result = setResponse(200,"success",evaluationOptional);
 
