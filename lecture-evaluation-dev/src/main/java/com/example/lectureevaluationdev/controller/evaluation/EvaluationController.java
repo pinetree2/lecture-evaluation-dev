@@ -12,10 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Controller
+@RestController //@RestController 어노테이션은 사용된 클래스의 모든 메서드에 자동으로 JSON 변환을 적용
 @RequestMapping("/evaluation")
 public class EvaluationController {
     private final EvaluationService evaluationService;
@@ -37,6 +38,7 @@ public class EvaluationController {
                 .professorName(content.get("professorName").toString())
                 .lectureYear((Integer) content.get("lectureYear"))
                 .semesterDivide(content.get("semesterDivide").toString())
+                .lectureDivide(content.get("lectureDivide").toString())
                 .evaluationTitle(content.get("evaluationTitle").toString())
                 .evaluationContent(content.get("evaluationContent").toString())
                 .totalScore(content.get("totalScore").toString())
@@ -68,6 +70,7 @@ public class EvaluationController {
                 .professorName(content.get("professorName")!= null ? content.get("professorName").toString() : null)
                 .lectureYear(content.get("lectureYear") != null ? Integer.parseInt((String) content.get("lectureYear")) : null)
                 .semesterDivide(content.get("semesterDivide")!= null ? content.get("semesterDivide").toString() : null)
+                .lectureDivide(content.get("lectureDivide")!= null ? content.get("lectureDivide").toString() : null)
                 .evaluationTitle(content.get("evaluationTitle")!= null ? content.get("evaluationTitle").toString() : null)
                 .evaluationContent(content.get("evaluationContent")!= null ? content.get("evaluationContent").toString() : null)
                 .totalScore(content.get("totalScore")!= null ? content.get("totalScore").toString() : null)
@@ -97,5 +100,16 @@ public class EvaluationController {
         return result;
     }
 
+    @GetMapping("/search/{page}")
+    @ResponseBody
+    public EvaluationResponse getSearch(HttpServletRequest request,@PathVariable("page") int pageNum, @RequestParam("lectureDivide") String lectureDivide, @RequestParam("searchType") String searchType, @RequestParam("search") String search) throws Exception{
+
+        if(search.isEmpty()){
+            return null;
+        }else{
+            return evaluationService.searchBoard(pageNum,lectureDivide,searchType,search);
+        }
+
+    }
 
 }

@@ -8,13 +8,15 @@ import com.example.lectureevaluationdev.repository.evaluation.EvaluationReposito
 import com.example.lectureevaluationdev.repository.user.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class EvaluationService extends ResponseService {
@@ -96,6 +98,7 @@ public class EvaluationService extends ResponseService {
     }
     //삭제
     //@Transactional -> 복수의 데이터 삭제할때
+
     public EvaluationResponse deleteEvaluation(Long evaluationID, User userInfo) {
         Optional<User> usercheck = Optional.ofNullable(userRepository.findByUserID(userInfo.getUserID()));
         Optional<Evaluation> checkevaluation = Optional.ofNullable(evaluationRepository.findByEvaluationID(evaluationID));
@@ -112,6 +115,64 @@ public class EvaluationService extends ResponseService {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    //검색like
+    private String setting(String keyword) {
+        return keyword == null ? null : "%" + keyword + "%";
+    }
+    //검색
+    public EvaluationResponse searchBoard(int pageNum, String lectureDivide, String searchType, String search) {
+
+
+        Sort sort;
+        if(searchType.equals("최신순")){
+            sort = Sort.by(Sort.Direction.DESC,"createdAt");
+            System.out.println("sort"+sort);
+        }else if(searchType.equals("추천순")){
+            sort = Sort.by(Sort.Direction.DESC,"likeCount");
+        }else{
+            sort = Sort.unsorted();
+        }
+        // 정렬 정보를 포함한 새로운 PageRequest를 생성합니다.
+        Pageable pageable = PageRequest.of(pageNum, 10,sort);
+
+        try{
+            //search : 검색하고자 하는 단어
+            // 전체, 전공, 교양, 기타
+            Page<Evaluation> searchResults;
+            List<Evaluation> searchresult;
+            searchresult = evaluationRepository.searchByLectureDivideAndFields(lectureDivide,search,pageable).getContent();
+
+
+            /*
+            if(lectureDivide.equals("전체")){
+                searchresult = evaluationRepository.findAllByKeywordContainingIgnoreCase(search,pageable);
+            }else{
+                searchresult = evaluationRepository.searchByLectureDivideAndFields(lectureDivide,search,pageable);
+            }
+*/
+
+
+            // 수정된 PageRequest를 사용하여 다시 데이터베이스에서 조회합니다.
+            //searchResults = evaluationRepository.findAll(pageable);
+            // 검색 결과가 비어있는 경우 따로 처리
+            if (searchresult.isEmpty()) {
+                return setResponse(200, "no_results", new ArrayList<>());
+            }
+            else{
+                // 검색 결과를 리스트로 반환합니다.
+                return setResponse(200,"success",searchresult);
+            }
+            //페이징 num 에 맞게 검색 + 최신순, 추천순정렬값 searchtype sort
+            //EvaluationResponse result = setResponse(200,"success",evaluationOptional);
+
+
+        }catch (Exception e){
             e.printStackTrace();
         }
         return null;
