@@ -6,9 +6,7 @@ import com.example.lectureevaluationdev.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -53,6 +51,27 @@ public class UserController {
         return this.userService.login(getuser);
     }
 
+    @PatchMapping("/logout")
+    @ResponseBody
+    public EvaluationResponse logout(HttpServletRequest request,@RequestBody Map<String,String> user) throws Exception{
+        User getuser = User.builder()
+                .userID(user.get("userID").toString())
+                .userPassword(user.get("userPassword").toString())
+                .userEmail(user.get("userEmail").toString())
+                .build();
 
+        return this.userService.logout(getuser);
+    }
 
+    @DeleteMapping("/deleteuser")
+    @ResponseBody
+    public EvaluationResponse deleteuser(HttpServletRequest request,@RequestBody Map<String,String> user) throws Exception {
+        User getuser = User.builder()
+                .userID(user.get("userID").toString())
+                .userPassword(user.get("userPassword").toString())
+                .userEmail(user.get("userEmail").toString())
+                .build();
+
+        return this.userService.deleteUser(getuser);
+    }
 }
