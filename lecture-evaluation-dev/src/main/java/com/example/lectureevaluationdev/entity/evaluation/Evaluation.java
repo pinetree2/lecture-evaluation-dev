@@ -1,5 +1,6 @@
 package com.example.lectureevaluationdev.entity.evaluation;
 
+import com.example.lectureevaluationdev.entity.likey.Likey;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Builder
@@ -15,6 +17,8 @@ import java.util.Date;
 @Data //get,set 메소드 이용가능하게 하는 어노테이션
 @Table(name = "evaluation")
 public class Evaluation {
+    @OneToMany(mappedBy = "evaluation")
+    private List<Likey> likes;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//는 JPA에서 기본 키를 자동으로 생성할 때 사용하는 방법 중 하나
@@ -55,13 +59,17 @@ public class Evaluation {
     @Column(name="lecture_score")
     String lectureScore;
 
+    @Column(name="like_count")
+    int likeCount;
+
+
     @Column(name="created_at", nullable = false)
     Date createdAt;
 
     @Column(name="updated_at", nullable = false)
     Date updatedAt;
 
-    int likeCount;
+
     @PrePersist
     public void prePersist() {
         // 기본값을 현재 시간으로 설정
