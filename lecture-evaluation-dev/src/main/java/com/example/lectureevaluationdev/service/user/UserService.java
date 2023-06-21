@@ -29,6 +29,7 @@ public class UserService extends ResponseService {
         try {
             if (user != null && foundUser.getUserPassword().equals(user.getUserPassword())) {
                 result = 1; // 로그인 성공
+                userRepository.setStatusTrue(user.getUserID());
                 return setResponse(200, "message", "로그인 성공");
             } else if (foundUser == null) {
                 result = -1; // ID 없음
@@ -75,6 +76,60 @@ public class UserService extends ResponseService {
         return null;
     }
 
+    public EvaluationResponse logout(User getuser) {
+        User foundUser = userRepository.findByUserID(getuser.getUserID());
+        int result = 0;
+        boolean success = result == 1;
+
+        try {
+            if (getuser != null && foundUser.getUserPassword().equals(getuser.getUserPassword())) {
+                result = 1; //값이 존재
+                userRepository.setStatusFalse(getuser.getUserID());
+                return setResponse(200, "message", "로그아웃 성공");
+            } else if (foundUser == null) {
+                result = -1; // ID 없음
+                return setResponse(404, "message", "존재하지 않는 ID입니다.");
+            }
+
+            else {
+                result = 0; //로그아웃 실패
+                return setResponse(402, "message", "로그아웃 실패");
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public EvaluationResponse deleteUser(User getuser) {
+        User foundUser = userRepository.findByUserID(getuser.getUserID());
+        int result = 0;
+        boolean success = result == 1;
+
+        try {
+            if (getuser != null && foundUser.getUserPassword().equals(getuser.getUserPassword())) {
+                result = 1; //값이 존재
+                userRepository.deleteUserById(getuser.getUserID());
+                return setResponse(200, "message", "회원탈퇴 성공");
+            } else if (foundUser == null) {
+                result = -1; // ID 없음
+                return setResponse(404, "message", "존재하지 않는 ID입니다.");
+            }
+
+            else {
+                result = 0; //로그아웃 실패
+                return setResponse(402, "message", "회원탈퇴 실패");
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     //참고
     private boolean isValidEmail(String email) {
@@ -87,6 +142,5 @@ public class UserService extends ResponseService {
         }
         return err;
     }
-
 
 }

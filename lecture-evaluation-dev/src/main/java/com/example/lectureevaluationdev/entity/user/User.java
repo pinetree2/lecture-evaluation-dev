@@ -28,6 +28,8 @@ public class User {
     @Column(name="user_email")
     private String userEmail;
 
+    @Column(name="status")
+    private Boolean status;
     /*
     @Column(name="userEmailHash")
     private String userEmailHash;
